@@ -1,241 +1,320 @@
 ---
-title: API Reference
+title: API return reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
-  - shell
-  - ruby
-  - python
   - javascript
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
   - <a href='https://github.com/slatedocs/slate'>Documentation Powered by Slate</a>
-
-includes:
-  - errors
 
 search: true
 
 code_clipboard: true
 ---
 
-# Introduction
+# Base api path
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+```
+qa: https://api-qa-returns.outshifter.com
 
-We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
-
-This example API documentation page was created with [Slate](https://github.com/slatedocs/slate). Feel free to edit it and use it as a base for your own API's documentation.
-
-# Authentication
-
-> To authorize, use this code:
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
 ```
 
-```python
-import kittn
+# Returns
 
-api = kittn.authorize('meowmeowmeow')
+## Add a return
+
+This endpoint create a return
+
+### HTTP Request
+
+`POST api/returns`
+
+### Params =>
+
+
+```json
+{
+    "orderId": "1",
+    "email": "email@domain.com",
+    "date": "2021-04-07T13:56:09.000Z",
+    "iban": "NL40INGB9130582334",
+    "bic": "NORWNOK1",
+    "fullname": "Fullname",
+    "items": [
+        {
+            "id": 1,
+            "quantity": 1,
+            "itemName": "an product",
+            "itemProductId": 1,
+            "returnReasonId": 1
+        }
+    ]
+}
 ```
 
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here" \
-  -H "Authorization: meowmeowmeow"
-```
+## Get return reasons
 
-```javascript
-const kittn = require('kittn');
+### HTTP Request
 
-let api = kittn.authorize('meowmeowmeow');
-```
+`GET api/return-reasons`
 
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
-
-<aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
-</aside>
-
-# Kittens
-
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens" \
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
-```
-
-> The above command returns JSON structured like this:
+> Response
 
 ```json
 [
+  { "id": 1, "reason": "The Product Didn't Match Its Description" },
+  { "id": 2, "reason": "I Bought the Wrong Item" },
+  { "id": 3, "reason": "The Brand Shipped the Wrong Item" },
+  { "id": 4, "reason": "The Product Was Damaged Upon Arrival" },
+  { "id": 5, "reason": "Product did not fit" },
+  { "id": 6, "reason": "Other" }
+]
+
+```
+
+## Get return declined reasons
+
+### HTTP Request
+
+`GET api/return-declined-reasons`
+
+> Response
+
+```json
+[
+  { "id": 1, "reason": "Wrong products", "needDetail": false },
+  { "id": 2, "reason": "Missing items", "needDetail": false },
   {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
+    "id": 3,
+    "reason": "Products looks like it has been used",
+    "needDetail": false
+  },
+  { "id": 4, "reason": "Products were dirty", "needDetail": false },
+  { "id": 5, "reason": "Product is made to measure", "needDetail": false },
+  { "id": 6, "reason": "Packaging was unsealed", "needDetail": false },
+  {
+    "id": 7,
+    "reason": "Original labels (hang tags) were not attached",
+    "needDetail": false
   },
   {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
+    "id": 8,
+    "reason": "Product was not in original packaging",
+    "needDetail": false
+  },
+  {
+    "id": 9,
+    "reason": "Product was not in original packaging",
+    "needDetail": false
+  },
+    {
+    "id": 10,
+    "reason": "Others",
+    "needDetail": true
   }
 ]
+
+
 ```
 
-This endpoint retrieves all kittens.
+
+
+# ORDERS
+
+## Get order
 
 ### HTTP Request
 
-`GET http://example.com/api/kittens`
-
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2" \
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
-}
-```
-
-This endpoint retrieves a specific kitten.
-
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
-
-### HTTP Request
-
-`GET http://example.com/kittens/<ID>`
+`GET /api/orders/:orderId`
 
 ### URL Parameters
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
+| Parameter | Description  |
+| --------- | ------------ |
+| orderId   | The order ID |
 
-## Delete a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2" \
-  -X DELETE \
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
-```
-
-> The above command returns JSON structured like this:
+> Response
 
 ```json
 {
-  "id": 2,
-  "deleted" : ":("
+  "createdAt": "2020-09-08T18:06:48.973Z",
+  "updatedAt": "2020-09-08T18:06:48.973Z",
+  "id": 12,
+  "channel": "Shopify",
+  "channelId": "",
+  "channelOrderName": "#1079",
+  "channelCreatedDate": "2020-09-08T18:06:46.000Z",
+  "shippingPrice": "128.00",
+  "shippingTitle": "Flate rate price",
+  "shippingCode": "Flate rate price",
+  "customer": {
+    "fullName": "Maximiliano Caba",
+    "email": "elmassi22@gmail.com",
+    "phone": null,
+    "shippingZip": "1439",
+    "shippingAddress": "Av Castañares",
+    "shippingCity": "Capital",
+    "shippingState": null,
+    "shippingCountry": "FR",
+    "shippingContactName": "Caba",
+    "billingName": "Maximiliano Caba",
+    "billingZip": "1439",
+    "billingCity": "Capital",
+    "billingState": null,
+    "billingAddress": "Av Castañares",
+    "billingCountry": "FR"
+  },
+  "items": [],
+  "reseller": {
+    "createdAt": "2020-08-19T18:27:37.804Z",
+    "updatedAt": "2020-12-04T19:10:21.000Z",
+    "id": 46,
+    "deletedAt": null,
+    "isBusiness": true,
+    "uid": "05kh09mob6XPmZAfihQG0Ve7PQy2",
+    "active": true,
+    "isAdmin": true,
+    "isSupplier": true,
+    "username": "maxicaba",
+    "name": "Maximiliano",
+    "surname": "Caba",
+    "dateBirth": "1990-01-01",
+    "phone": "9127641924",
+    "phoneCode": "",
+    "address": "Av rivadavia",
+    "address2": null,
+    "postCode": "1234",
+    "state": "Paris",
+    "country": "FR",
+    "city": "Lugano",
+    "avatar": "https://s3.eu-central-1.amazonaws.com/app.outshifter.com/assets/img/avatar.png",
+    "website": "https://",
+    "description": "",
+    "facebookAccessToken": null,
+    "facebookPageId": null,
+    "instagramAccountId": null,
+    "mangopayId": "86138279",
+    "squarespaceApiToken": null,
+    "firstSquarespaceImport": false,
+    "interests": "",
+    "gender": "",
+    "contactName": "Maxi",
+    "brandName": "mitienda",
+    "organizationNumber": "1",
+    "vatNumber": "124124",
+    "warehouseSameAddress": true,
+    "termsAndConditions": false,
+    "privacyPolicy": false,
+    "coverImage": null,
+    "rate": 0,
+    "shopifyAccessToken": null,
+    "shopifyExportAccessToken": null,
+    "shopifyUrl": null,
+    "shopifyCurrency": null,
+    "shopifyCarrierId": null,
+    "shopifyFulfillmentId": null,
+    "shopifyLocationId": null,
+    "business2": {
+      "sameAsAccount": false,
+      "businessName": null,
+      "country": null,
+      "address": null,
+      "address2": null,
+      "postCode": null,
+      "city": null,
+      "ecommerceSystem": null,
+      "products": {
+        "category": null,
+        "subcategory": null,
+        "commission": null,
+        "channels": null
+      },
+      "contact": {
+        "title": null,
+        "name": null,
+        "surname": null,
+        "email": null,
+        "role": null,
+        "phoneCode": null,
+        "phone": null
+      },
+      "return": {
+        "right": null,
+        "label": null,
+        "cost": null,
+        "policy": null,
+        "address": {
+          "sameAsBusiness": false,
+          "sameAsWarehouse": false,
+          "country": null,
+          "timezone": null,
+          "address": null,
+          "address2": null,
+          "postCode": null,
+          "returnCity": null
+        }
+      },
+      "fulfillment": {
+        "shippingRates": null,
+        "processingTime": null,
+        "shippingTo": null
+      }
+    },
+    "warehouse": {
+      "address": "Av rivadavia",
+      "address2": null,
+      "postCode": "1234",
+      "state": "Paris",
+      "country": "FR",
+      "timezone": "Europe/Paris",
+      "city": "Lugano"
+    },
+    "check": {
+      "firstSyncShopify": false,
+      "firstSyncWoo": false,
+      "activateGuide": false
+    }
+  },
+  "trackings": []
 }
 ```
 
-This endpoint deletes a specific kitten.
+## Test order exists
+
+Test if order exists
 
 ### HTTP Request
 
-`DELETE http://example.com/kittens/<ID>`
+`GET /api/orders/testOder/:orderId`
 
 ### URL Parameters
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to delete
+| Parameter | Description  |
+| --------- | ------------ |
+| orderId   | The order Id to test if order exists |
 
+
+> Response
+
+```json
+{"exists":true}
+```
+
+## Test customer email exists
+
+### HTTP Request
+
+`GET /api/orders/testEmail/:email`
+
+### URL Parameters
+
+| Parameter | Description  |
+| --------- | ------------ |
+| email   | a valid email |
+
+
+> Response
+
+```json
+{"exists":true}
+```
