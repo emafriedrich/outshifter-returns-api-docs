@@ -12,14 +12,14 @@ search: true
 code_clipboard: true
 ---
 
-# Base api path
+# Returns api
 
+
+## Base api path
 ```
 qa: https://api-qa-returns.outshifter.com
 
 ```
-
-# Returns
 
 ## Add a return
 
@@ -116,11 +116,6 @@ This endpoint create a return
 
 
 ```
-
-
-
-# ORDERS
-
 ## Get order
 
 ### HTTP Request
@@ -317,4 +312,40 @@ Test if order exists
 
 ```json
 {"exists":true}
+```
+
+# Outshifter main api
+
+```
+qa: https://api-qa.outshifter.com
+pro: https://api.outshifter.com
+
+```
+
+## Set return status
+
+### HTTP Request
+
+`POST /api/returns/setReturnStatus`
+
+<aside class="warning"> Note that the returnDeclinedReasonDetails is need only if the returnDeclinedReason need detail (like "others") </aside>
+
+> Send JSON object like this
+
+```json
+{
+    "itemId": 1,
+    "returnStatus": "DECLINED",
+    "returnDeclinedReasonId": 1,
+    "returnDeclinedReasonDetail": "El producto estaba roto"
+}
+```
+
+> or this
+
+```json
+{
+    "itemId": 1,
+    "returnStatus": "APPROVED"
+}
 ```
